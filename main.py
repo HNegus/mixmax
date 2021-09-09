@@ -98,8 +98,9 @@ saving video as         : {args.outputfile}
     # Get first
     first_index = 0
     last_index = first_index + args.n
-    inp_last.set(cv2.CAP_PROP_POS_FRAMES, last_index)
-    ret, frame = inp_last.read()
+    # inp_last.set(cv2.CAP_PROP_POS_FRAMES, last_index)
+    
+    _, frame = inp_last.read()
     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     frame = frame * factor
     TO_RELEASE.append(inp_first)
@@ -107,21 +108,25 @@ saving video as         : {args.outputfile}
     TO_RELEASE.append(out)
 
     # Make average
-    for i in tqdm(range(args.n - 1), desc="Building first frame"):
+    this_range = list(range(1, args.n))
+    print(f"Making first average with frames '{this_range[0]}-{this_range[-1]}'")
+    for i in tqdm(range(1, args.n), desc="Building first frame"):
         _, tmp = inp_last.read()
         # tmp = cv2.cvtColor(tmp, cv2.COLOR_BGR2GRAY)
         frame = cv2.add(frame, tmp * factor)
 
-    for i in tqdm(range(args.n - 1, num_frames), desc="Building video"):
+    this_range = list(range(args.n, num_frames))
+    print(f"Making rest with frames '{this_range[0]}-{this_range[-1]}'")
+    for i in tqdm(range(args.n, num_frames), desc="Building video"):
         # Subtract first
         # inp.set(cv2.CAP_PROP_POS_FRAMES, first_index)
-        _, tmp = inp_last.read()
+        _, tmp = inp_first.read()
         # tmp =  cv2.cvtColor(tmp, cv2.COLOR_BGR2GRAY)
         frame = cv2.subtract(frame, tmp*factor)
         
         # Add new
         # inp.set(cv2.CAP_PROP_POS_FRAMES, last_index)
-        _, tmp = inp_first.read()
+        _, tmp = inp_last.read()
         # tmp = cv2.cvtColor(tmp, cv2.COLOR_BGR2GRAY)
         frame = cv2.add(frame, tmp*factor)
 
@@ -136,9 +141,10 @@ saving video as         : {args.outputfile}
             # out.release()
             # exit(0)
 
-        out.write(frame.astype('uint8'))
+        write_frame = frame.astype('uint8')
+        out.write(write_frame)
         if args.show:
-            cv2.imshow('frame', frame.astype('uint8'))
+            cv2.imshow('frame', write_frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             inp_first.release()
