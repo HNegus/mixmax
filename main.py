@@ -49,6 +49,8 @@ def check_inputfile_existence(input):
     print(f"Could not find input file '{input}'")
     exit(0)
 
+
+
 def make_output_dir():
     if path.exists('output') and not path.isfile('output'):
         return
@@ -102,7 +104,6 @@ saving video as         : {args.outputfile}
     
     _, frame = inp_last.read()
     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    frame = frame * factor
     TO_RELEASE.append(inp_first)
     TO_RELEASE.append(inp_last)
     TO_RELEASE.append(out)
@@ -113,22 +114,25 @@ saving video as         : {args.outputfile}
     for i in tqdm(range(1, args.n), desc="Building first frame"):
         _, tmp = inp_last.read()
         # tmp = cv2.cvtColor(tmp, cv2.COLOR_BGR2GRAY)
-        frame = cv2.add(frame, tmp * factor)
+        frame = cv2.add(frame, frame)
+    frame = frame / args.n
 
     this_range = list(range(args.n, num_frames))
     print(f"Making rest with frames '{this_range[0]}-{this_range[-1]}'")
     for i in tqdm(range(args.n, num_frames), desc="Building video"):
         # Subtract first
         # inp.set(cv2.CAP_PROP_POS_FRAMES, first_index)
-        _, tmp = inp_first.read()
+        # _, tmp = inp_first.read()
         # tmp =  cv2.cvtColor(tmp, cv2.COLOR_BGR2GRAY)
-        frame = cv2.subtract(frame, tmp*factor)
+        # frame = cv2.subtract(frame, tmp*factor)
         
         # Add new
         # inp.set(cv2.CAP_PROP_POS_FRAMES, last_index)
         _, tmp = inp_last.read()
         # tmp = cv2.cvtColor(tmp, cv2.COLOR_BGR2GRAY)
-        frame = cv2.add(frame, tmp*factor)
+        tmp2 = frame * args.n
+        frame = cv2.add(tmp.astype('float') , tmp2) / (last_index + 1) # XXX Commit: Remove '+ 1' and/or 'astype("float")' for feedback effect
+        # frame = cv2.add(frame, tmp*factor)
 
 
         # Show
