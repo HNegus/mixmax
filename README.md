@@ -11,7 +11,8 @@ Optional parameter `--show` to immediately see output.
 ## Build steps
 
 C++ version:
-```
+
+```c++
 # First build opencv
 cd src/opencv
 mkdir build

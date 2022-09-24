@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Width, height: " << width << ", " << height << std::endl;
 
-    int fourcc = cv::VideoWriter::fourcc('M', 'P', '4', 'v');
+    int fourcc = cv::VideoWriter::fourcc('m', 'p', '4', 'v');
     VideoWriter output(output_filename, fourcc, 24, {(int)width, (int) height}, true);
 
     Mat avg, frame, tmp;
@@ -62,48 +62,74 @@ int main(int argc, char *argv[]) {
     }
     // frame /= n;
 
+    int stepsize = 1;
+
     high_resolution_clock::time_point prev = high_resolution_clock::now();
-    for (int j = 0; ; j++) {
-        // tmp = frame;
-        // CV_8UC3
-        // std::cout << "Here " << frame.at<float>(100, 100, 0) << std::endl;
-        // std::cout << "There " << tmp.at<double>(0, 0, 0) << std::endl;
-        // tmp = cv::Mat((int)height, (int)width, CV_8U, &frame);
-        // avg.convertTo(tmp, CV_32FC3);
-        // tmp *= factor;
-        // avg.convertTo(frame, CV_8UC3);
-        cv::convertScaleAbs(avg, frame);
-        if (show)
-            imshow("Frame", frame);
-        output.write(frame);
+    for (int j = 0; input.read(frame); j++) {
 
         // input.read(frame);
-        // frame.convertTo(tmp, CV_32FC3);
-        // avg -= avg / n;
-        input.read(frame);
+
         frame.convertTo(tmp, CV_32FC3);
         cv::accumulateWeighted(tmp, avg, factor);
-        // avg += tmp / n;
+        cv::convertScaleAbs(avg, frame);
 
-        // input.read(tmp);
-        // tmp.convertTo(frame, CV_32FC3);
-        // avg += frame * factor;
-        // avg -= avg * factor;
-
-
+        if (show)
+            imshow("Frame", frame);
+        
+        if ((waitKey(1) & 0xFF) == 'q') {
+            exit(0);
+        } 
+        output.write(frame);
         high_resolution_clock::time_point current = high_resolution_clock::now();
         duration<double, std::milli> time_span = current - prev;
-        if (j % 10 == 0) {
-            std::cout << "\33[2K\r";
-            std::cout << j << ": "  << time_span.count() << "ms;\t" << 10/(time_span.count()/1000) << "fps";
+        if (j % stepsize == 0) {
+            // std::cout << "\33[2K\r";
+            std::cout << j << ": "  << time_span.count()/stepsize << "ms;\t" << stepsize/(time_span.count()/1000) << "fps" << std::endl;
             std::cout.flush();
             prev = current;
         }
 
-        if ((waitKey(1) & 0xFF) == 'q') {
-            
-            exit(0);
-        } 
+        // try {
+        // } catch (cv::Exception e)  {
+
+        //     std::cout << std::endl;
+
+        //     std::cout << "factor: " << factor << std::endl;
+
+        //     std::cout << std::endl;
+    
+        //     std::cout << "tmp channels: " << tmp.channels() << std::endl;
+        //     std::cout << "tmp cols: " << tmp.cols << std::endl;
+        //     std::cout << "tmp channels: " << tmp.rows << std::endl;
+        //     std::cout << "tmp size: " << tmp.size() << std::endl;
+        //     std::cout << "tmp total: " << tmp.total() << std::endl;
+        //     std::cout << "tmp elemsize: " << tmp.elemSize() << std::endl;
+        //     std::cout << "tmp type: " << tmp.type() << std::endl;
+
+        //     std::cout << std::endl;
+
+        //     std::cout << "frame channels: " << frame.channels() << std::endl;
+        //     std::cout << "frame cols: " << frame.cols << std::endl;
+        //     std::cout << "frame channels: " << frame.rows << std::endl;
+        //     std::cout << "frame size: " << frame.size() << std::endl;
+        //     std::cout << "frame total: " << frame.total() << std::endl;
+        //     std::cout << "frame elemsize: " << frame.elemSize() << std::endl;
+        //     std::cout << "frame type: " << frame.type() << std::endl;
+
+        //     std::cout << std::endl;
+
+        //     std::cout << "avg channels: " << avg.channels() << std::endl;
+        //     std::cout << "avg cols: " << avg.cols << std::endl;
+        //     std::cout << "avg channels: " << avg.rows << std::endl;
+        //     std::cout << "avg size: " << avg.size() << std::endl;
+        //     std::cout << "avg total: " << avg.total() << std::endl;
+        //     std::cout << "avg elemsize: " << avg.elemSize() << std::endl;
+        //     std::cout << "avg type: " << avg.type() << std::endl;
+        //     exit(0);
+        // }
+
+        // }
+        
     }
 
 }
