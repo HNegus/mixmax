@@ -1,10 +1,11 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/cvstd.hpp>
+#include <opencv2/core/cuda.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/video.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include <iostream>
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "Program init" << std::endl;
-    std::cout << "GPU support: " << cv::cuda::getCudaEnabledDeviceCount() << std::endl;
+    std::cout << "GPU support: " << cuda::getCudaEnabledDeviceCount() << std::endl;
 
     const char *input_filename = argv[1];
     const char *output_filename = argv[2];

@@ -12,8 +12,16 @@ Optional parameter `--show` to immediately see output.
 
 C++ version:
 ```
+# First build opencv
+cd src/opencv
 mkdir build
-cmake -B build
+cmake -B build -DBUILD_LIST=videoio,video,highgui,core .
+cmake --build build
+
+# Then build executable
+cd ../../
+mkdir build
+cmake -B build -DCMAKE_BUILD_TYPE=Release .
 cmake --build build .
 ```
 

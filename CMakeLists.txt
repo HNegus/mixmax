@@ -11,28 +11,34 @@ file(GLOB
     src/*.cpp
     )
 
+# set(OpenCV_ROOT "./src/opencv")
+# set(OpenCV_INCLUDE_DIRS "${OpenCV_ROOT}/include")
+# set(OpenCV_LIBRARIES "${OpenCV_ROOT}/lib")
+
 set(OPENCV_LIBS
-    opencv_calib3d
+    # opencv_calib3d
     opencv_core
-    opencv_dnn
-    opencv_features2d
-    opencv_flann
+    # opencv_dnn
+    # opencv_features2d
+    # opencv_flann
     opencv_highgui
-    opencv_imgcodecs
+    # opencv_imgcodecs
     opencv_imgproc
-    opencv_ml
-    opencv_objdetect
-    opencv_photo
+    # opencv_ml
+    # opencv_objdetect
+    # opencv_photo
     # opencv_shape
-    opencv_stitching
+    # opencv_stitching
     # opencv_superres
-    opencv_video
+    # opencv_video
     opencv_videoio
     # opencv_videostab
     )
 
 # include_directories(opencv/include)
 include_directories(src/opencv/modules/core/include
+                    src/opencv/build/include
+                    src/opencv/build
                     src/opencv/include
                     src/opencv/modules/calib3d/include
                     src/opencv/modules/core/include
@@ -49,16 +55,21 @@ include_directories(src/opencv/modules/core/include
                     src/opencv/modules/video/include
                     src/opencv/modules/videoio/include
                     )
-# include_directories(opencv/modules/dnn/include)
+# include_directories(${OpenCV_INCLUDE_DIRS})
 
-link_directories(src/opencv/build/3rdparty/lib
-                 src/opencv/build/3rdparty/ippicv/ippicv_lnx/icv/lib/intel64/)
+
+# find_library(opencv ${OpenCV_LIBS}src/opencv/build/lib)
+
+link_directories(src/opencv/build/lib)
+                #  src/opencv/build/3rdparty/ippicv/ippicv_lnx/icv/lib/intel64/)
 add_executable(MAX ${SOURCES})
 
 
+# find_package(OpenCV REQUIRED)
+
 target_link_libraries(MAX 
-    PRIVATE ${OPENCV_LIBS}
-    # PRIVATE opencv
+    PUBLIC ${OPENCV_LIBS}
+    # PRIVATE opencv_core
     )
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
