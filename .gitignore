@@ -1,4 +1,5 @@
 *.mp4
 *.json
 profile
-opencv
+build
+MAX
