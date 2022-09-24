@@ -27,8 +27,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    std::cout << "Program init" << std::endl;
-    std::cout << "GPU support: " << cuda::getCudaEnabledDeviceCount() << std::endl;
+    std::cout << "GPU support: " << (cuda::getCudaEnabledDeviceCount() ? "yes" : "no") << std::endl;
 
     const char *input_filename = argv[1];
     const char *output_filename = argv[2];
@@ -37,7 +36,6 @@ int main(int argc, char *argv[]) {
 
 
     VideoCapture input(input_filename);
-    // VideoCapture input(input_filename);
     auto width = input.get(cv::CAP_PROP_FRAME_WIDTH);
     auto height =  input.get(cv::CAP_PROP_FRAME_HEIGHT);
 
@@ -60,9 +58,8 @@ int main(int argc, char *argv[]) {
         frame.convertTo(tmp, CV_32FC3);
         avg += tmp / n;
     }
-    // frame /= n;
 
-    int stepsize = 1;
+    int stepsize = 10;
 
     high_resolution_clock::time_point prev = high_resolution_clock::now();
     for (int j = 0; input.read(frame); j++) {
@@ -83,53 +80,11 @@ int main(int argc, char *argv[]) {
         high_resolution_clock::time_point current = high_resolution_clock::now();
         duration<double, std::milli> time_span = current - prev;
         if (j % stepsize == 0) {
-            // std::cout << "\33[2K\r";
-            std::cout << j << ": "  << time_span.count()/stepsize << "ms;\t" << stepsize/(time_span.count()/1000) << "fps" << std::endl;
+            std::cout << "\33[2K\r";
+            std::cout << j << ": "  << time_span.count()/stepsize << "ms;\t" << stepsize/(time_span.count()/1000) << "fps";
             std::cout.flush();
             prev = current;
         }
-
-        // try {
-        // } catch (cv::Exception e)  {
-
-        //     std::cout << std::endl;
-
-        //     std::cout << "factor: " << factor << std::endl;
-
-        //     std::cout << std::endl;
-    
-        //     std::cout << "tmp channels: " << tmp.channels() << std::endl;
-        //     std::cout << "tmp cols: " << tmp.cols << std::endl;
-        //     std::cout << "tmp channels: " << tmp.rows << std::endl;
-        //     std::cout << "tmp size: " << tmp.size() << std::endl;
-        //     std::cout << "tmp total: " << tmp.total() << std::endl;
-        //     std::cout << "tmp elemsize: " << tmp.elemSize() << std::endl;
-        //     std::cout << "tmp type: " << tmp.type() << std::endl;
-
-        //     std::cout << std::endl;
-
-        //     std::cout << "frame channels: " << frame.channels() << std::endl;
-        //     std::cout << "frame cols: " << frame.cols << std::endl;
-        //     std::cout << "frame channels: " << frame.rows << std::endl;
-        //     std::cout << "frame size: " << frame.size() << std::endl;
-        //     std::cout << "frame total: " << frame.total() << std::endl;
-        //     std::cout << "frame elemsize: " << frame.elemSize() << std::endl;
-        //     std::cout << "frame type: " << frame.type() << std::endl;
-
-        //     std::cout << std::endl;
-
-        //     std::cout << "avg channels: " << avg.channels() << std::endl;
-        //     std::cout << "avg cols: " << avg.cols << std::endl;
-        //     std::cout << "avg channels: " << avg.rows << std::endl;
-        //     std::cout << "avg size: " << avg.size() << std::endl;
-        //     std::cout << "avg total: " << avg.total() << std::endl;
-        //     std::cout << "avg elemsize: " << avg.elemSize() << std::endl;
-        //     std::cout << "avg type: " << avg.type() << std::endl;
-        //     exit(0);
-        // }
-
-        // }
-        
     }
 
 }
