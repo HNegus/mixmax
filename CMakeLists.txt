@@ -33,6 +33,7 @@ set(OPENCV_LIBS
 
 # include_directories(opencv/include)
 include_directories(src/opencv/modules/core/include
+                    src/opencv/include
                     src/opencv/modules/calib3d/include
                     src/opencv/modules/core/include
                     src/opencv/modules/dnn/include
